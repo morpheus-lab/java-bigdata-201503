@@ -1,9 +1,27 @@
 package collections;
 
+class Student {
+	int id;	// 학번
+	String name;	// 이름
+	
+	public void sayName() {
+		System.out.println(name);
+	}
+}
+
 public class MyStackTest {
 	
 	public static void main(String[] args) {
 		
+		MyStack<Student> stack2 = new MyStack<Student>();
+		
+		Student s = new Student();
+		s.id = 1000;
+		s.name = "홍길동";
+		
+		stack2.push(s);
+		
+		/*
 		MyStack<String> stack1 = new MyStack<String>();
 		
 		stack1.push("한국");
@@ -27,6 +45,7 @@ public class MyStackTest {
 		stack1.push("캄보디아");	// 가득찬 이후에 push했기 때문에 무시됨
 		
 		System.out.println(stack1.pop());
+		*/
 		
 	}
 	
