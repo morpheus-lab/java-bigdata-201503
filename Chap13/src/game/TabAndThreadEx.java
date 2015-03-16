@@ -81,6 +81,8 @@ public class TabAndThreadEx extends JFrame {
 	public TabAndThreadEx() {
 		setTitle("Hi");
 		
+		
+		
 		setSize(600, 450);
 		setVisible(true);
 	}
