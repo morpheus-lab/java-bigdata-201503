@@ -1,18 +1,13 @@
 package chat.client;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
 
 import javax.swing.*;
 
-public class ChatClient extends JFrame implements ActionListener {
+public class ChatClient extends JFrame implements ActionListener, Runnable {
 	
 	// 채팅 서버 주소
 	private String serverAddress = "192.168.1.13";
@@ -43,9 +38,18 @@ public class ChatClient extends JFrame implements ActionListener {
 	private JTextField messageInput;
 	private JButton sendButton;
 	
+	// 메시지 수신
+	private JTextArea messageView;
+	
 	public ChatClient() {
 		setTitle("GUI 채팅 클라이언트");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		addWindowListener(new WindowAdapter() {
+//			@Override
+//			public void windowClosing(WindowEvent e) {
+//				super.windowClosing(e);
+//			}
+//		});
 		
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
@@ -106,7 +110,7 @@ public class ChatClient extends JFrame implements ActionListener {
 		*/
 		
 		// 수신 메시지 출력부
-		JTextArea messageView = new JTextArea();
+		messageView = new JTextArea();
 		messageView.setEditable(false);
 		JScrollPane messageViewScroll = new JScrollPane(messageView,
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -199,6 +203,9 @@ public class ChatClient extends JFrame implements ActionListener {
 		// 입출력 스트림 객체 생성
 		out = new PrintWriter(sock.getOutputStream(), true);
 		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+		
+		// 메시지 읽기 스레드 시작
+		(new Thread(this)).start();
 	}
 	
 	private void disconnect() {
@@ -217,6 +224,24 @@ public class ChatClient extends JFrame implements ActionListener {
 	private void sendMessage(String message) {
 		// 메시지 전송
 		out.println(message);
+	}
+	
+	@Override
+	public void run() {
+		// 이 객체가 Runnable로서 할 일
+		if (in != null) {
+			while (true) {
+				try {
+					String msg = in.readLine();
+					messageView.append(msg + "\n");
+					
+					// 스크롤 다운
+					messageView.setCaretPosition(messageView.getDocument().getLength());
+				} catch (IOException e) {
+					break;
+				}
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
