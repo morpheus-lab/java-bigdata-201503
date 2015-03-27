@@ -51,32 +51,38 @@ public class Omok {
 	
 	static int checkWinner(int[][] badukpan) {	// 흑돌: CODE_BLACK, 백돌: CODE_WHITE, 이긴사람없음: 0
 		
-		for (int y = 2; y < badukpan[0].length - 2; y++) {
-			for (int x = 2; x < badukpan.length - 2; x++) {
+		for (int y = 0; y < badukpan[0].length; y++) {
+			for (int x = 0; x < badukpan.length; x++) {
 				int dol = badukpan[x][y];
 				// 가로 방향 승리
-				if (badukpan[x-2][y] == dol
+				if (x > 1 && x < badukpan.length - 2
+						&& badukpan[x-2][y] == dol
 						&& badukpan[x-1][y] == dol
 						&& badukpan[x+1][y] == dol
 						&& badukpan[x+2][y] == dol) {
 					return dol;
 				}
 				// 세로 방향 승리
-				if (badukpan[x][y-2] == dol
+				if (y > 1 && y < badukpan[0].length - 2
+						&& badukpan[x][y-2] == dol
 						&& badukpan[x][y-1] == dol
 						&& badukpan[x][y+1] == dol
 						&& badukpan[x][y+2] == dol) {
 					return dol;
 				}
 				// 좌하-우상 대각선
-				if (badukpan[x-2][y+2] == dol
+				if (x > 1 && x < badukpan.length - 2
+						&& y > 1 && y < badukpan[0].length - 2
+						&& badukpan[x-2][y+2] == dol
 						&& badukpan[x-1][y+1] == dol
 						&& badukpan[x+1][y-1] == dol
 						&& badukpan[x+2][y-2] == dol) {
 					return dol;
 				}
 				// 좌상-우하 대각선
-				if (badukpan[x-2][y-2] == dol
+				if (x > 1 && x < badukpan.length - 2
+						&& y > 1 && y < badukpan[0].length - 2
+						&& badukpan[x-2][y-2] == dol
 						&& badukpan[x-1][y-1] == dol
 						&& badukpan[x+1][y+1] == dol
 						&& badukpan[x+2][y+2] == dol) {
