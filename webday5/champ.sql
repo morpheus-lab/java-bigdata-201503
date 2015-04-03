@@ -1,3 +1,9 @@
+CREATE SEQUENCE SEQ_CHAMP
+  START WITH 1
+  INCREMENT BY 1
+  NOCYCLE
+;
+
 CREATE TABLE champ (
   no        NUMBER(11)                      NOT NULL,
   name      VARCHAR2(20)                    NOT NULL,
