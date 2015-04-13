@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>AJAX 연습</title>
+    <script>
+    	var request = null;
+    	
+    	// XMLHttpRequest 객체 생성
+    	function createXHR() {
+    		try {
+    			request = new XMLHttpRequest();	// 표준 XHR 객체
+    		} catch (ms) {
+    			try {
+    				request = new ActiveXObject("Msxml2.XMLHTTP");	// MS IE
+    			} catch (otherms) {
+    				try {
+    					request = new ActiveXObject("Microsoft.XMLHTTP");	// MS IE5 ~ IE6
+    				} catch (failed) {
+    					request = null;
+    				}
+    			}
+    		}
+    		if (request == null) {
+    			alert("XHR 객체 생성 실패");
+    		}
+    	}
+    	
+    	function testXHR() {
+    		createXHR();
+    		request.onreadystatechange = function () {
+    			console.log('request.readyState: ' + request.readyState);
+    			if (request.readyState == 4) {
+    				var newSold = request.responseText;
+    				var boardsSold = document.getElementById('boards_sold');
+    				
+    				boardsSold.innerHTML = newSold;	// 새로운 판매대수를 table에 반영
+    				
+    				var unitPrice = Number(document.getElementById('unit_price')
+    						.innerHTML.substring(1));
+    				var unitCost = Number(document.getElementById('unit_cost')
+    						.innerHTML.substring(1));
+    				var newProfit = (unitPrice - unitCost) * Number(newSold);	// (단가 - 원가) * 판매대수
+    				
+    				document.getElementById('profit').innerHTML = '$' + newProfit;	// 새로운 총 이익을 반영
+    			}
+    		};
+    		request.open('GET', './getUpdateSales', true);
+    		request.send('Hello, AJAX!!!');
+    	}
+    </script>
+</head>
+<body>
+
+    <h1>스노보드 판매 현황</h1>
+
+    <table border="1">
+        <tr>
+            <td>스노보드 판매대수</td>
+            <td id="boards_sold">1012</td>
+        </tr>
+        <tr>
+            <td>판매단가</td>
+            <td id="unit_price">$249.95</td>
+        </tr>
+        <tr>
+            <td>원가</td>
+            <td id="unit_cost">$84.22</td>
+        </tr>
+    </table>
+
+    <p>판매 총 이익: <span id="profit">$167718.76</span></p>
+
+    <button onclick="testXHR()">Show me the MONEY</button>
+    
+</body>
+</html>

@@ -9,7 +9,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-	String savePath = "D:/tmp/attach";
+	String savePath = "D:/tmp/attach/tmp";
 	int sizeLimit = 10 * 1024 * 1024;
 
 	MultipartRequest mr = new MultipartRequest(request, savePath, sizeLimit,
@@ -48,13 +48,20 @@
 		int count = pstmt.executeUpdate();
 		
 		/**** attach 테이블 INSERT ****/
-		File attach1 = mr.getFile("attach1");
-		if (attach1 != null) {
+		String sqlInsertAttach = "INSERT INTO attach VALUES (seq_attach.NEXTVAL,?,?,?,?)";
+		String originalName = null;
+		String mimeType = null;
+		
+		File attach = mr.getFile("attach1");
+		if (attach != null) {
 			// attach INSERT
+			originalName = attach.getName();
+			attach.renameTo(new File(attach.getParentFile().getParentFile(), ""));
+			mimeType = application.getMimeType(attach.getAbsolutePath());
 		}
 		
-		File attach2 = mr.getFile("attach2");
-		if (attach2 != null) {
+		attach = mr.getFile("attach2");
+		if (attach != null) {
 			// attach INSERT
 		}
 		
