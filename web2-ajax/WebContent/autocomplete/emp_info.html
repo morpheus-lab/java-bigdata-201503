@@ -29,6 +29,7 @@
 		}
 
 		var request = createRequest();
+		var empArr = [];
 		
 		function queryUserId(input) {
 			// 입력된 텍스트
@@ -44,16 +45,45 @@
 						if (request.status == 200) {
 							// 정상응답
 							var result = request.responseText;
-							console.log(result);
+							//console.log(result);
+							empArr = JSON.parse(result);
+							//console.log(empArr);
 							
-							var empArr = JSON.parse(result);
-							console.log(empArr);
+							var dList = document.getElementById('queryResult');
+							dList.innerHTML = '';
+							for (var i in empArr) {
+								var elOption = document.createElement('option');
+								elOption.value = empArr[i].userId;
+								dList.appendChild(elOption);
+							}
 						} else {
-							// 에러
+							empArr = [];
 						}
 					}
 				};
 				request.send(data);
+			}
+		}
+		
+		function inputChanged(input) {
+			var inputText = input.value.trim();
+			var empInfo = null;
+			for (var i in empArr) {
+				if (empArr[i].userId == inputText) {
+					empInfo = empArr[i];
+					break;
+				}
+			}
+			if (empInfo) {
+				document.getElementById('emp_name').innerHTML = empInfo.name;
+				document.getElementById('emp_title').innerHTML = empInfo.title;
+				document.getElementById('dept_name').innerHTML = empInfo.deptName;
+				document.getElementById('emp_sal').innerHTML = empInfo.salary;
+			} else {
+				document.getElementById('emp_name').innerHTML = '';
+				document.getElementById('emp_title').innerHTML = '';
+				document.getElementById('dept_name').innerHTML = '';
+				document.getElementById('emp_sal').innerHTML = '';
 			}
 		}
 	</script>
@@ -62,7 +92,10 @@
 	<table border="1">
 		<tr>
 			<td>User ID</td>
-			<td><input type="text" onkeyup="queryUserId(this)"></td>
+			<td>
+				<input type="text" onkeyup="queryUserId(this)" oninput="inputChanged(this)" list="queryResult">
+				<datalist id="queryResult"></datalist>
+			</td>
 		</tr>
 		<tr>
 			<td>이름</td>
