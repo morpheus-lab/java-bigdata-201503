@@ -13,6 +13,13 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 
+	<!-- JDBC 리소스 설정 -->
+	<resource-ref>
+		<res-ref-name>jdbc/oracle</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+
 	<servlet>
 		<servlet-name>updateSalesServlet</servlet-name>
 		<servlet-class>web2.ajax.UpdateSalesServlet</servlet-class>
@@ -22,21 +29,4 @@
 		<url-pattern>/getUpdateSales</url-pattern>
 	</servlet-mapping>
 	
-	<servlet>
-		<servlet-name>lookup</servlet-name>
-		<servlet-class>pizza.servlet.LookUpCustomer</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>lookup</servlet-name>
-		<url-pattern>/pizza/lookUpCustomer</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>po</servlet-name>
-		<servlet-class>pizza.servlet.PlaceOrder</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>po</servlet-name>
-		<url-pattern>/pizza/placeOrder</url-pattern>
-	</servlet-mapping>
 </web-app>

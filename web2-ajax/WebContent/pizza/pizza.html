@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Order Pizza</title>
+<script type="text/javascript" src="./js/pizza.js"></script>
+</head>
+<body onload="createRequest();">
+<p><img src="./images/breakneck-logo.gif" alt="Break Neck Pizza" /></p>
+<form action="placeOrder" method="POST">
+	<p>
+		이름을 입력하세요:
+		<input type="text" name="name" id="name" onchange="getCustomerInfo();" />
+	</p>
+	<p>
+		주문내역:
+		<textarea rows="6" cols="50" name="order" id="order"></textarea>
+	</p>
+	<p>
+		배달주소:
+		<textarea rows="6" cols="50" name="addr" id="addr"></textarea>
+	</p>
+	<p>
+		<input type="submit" id="submit" value="피자주문" />
+	</p> 
+</form>
+
+</body>
+</html>
