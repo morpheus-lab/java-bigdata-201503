@@ -29,7 +29,9 @@ function serveDrink() {	// ajax 요청이 완료되면 응답을 받아서 화�
 			// 에러 발생
 			alert('커피메이커1 사용 중 오류 발생');
 		}
-	} else if (request2.readyState == 4) {
+		request1 = createRequest();
+	}
+	if (request2.readyState == 4) {
 		if (request2.status == 200) {
 			var resMsg = request2.responseText;
 			var name = resMsg.substring(1);	// 인덱스 1 ~ 끝
@@ -39,6 +41,7 @@ function serveDrink() {	// ajax 요청이 완료되면 응답을 받아서 화�
 			// 에러 발생
 			alert('커피메이커2 사용 중 오류 발생');
 		}
+		request2 = createRequest();
 	}
 }
 
@@ -53,7 +56,7 @@ function orderCoffee() {	// 버튼의 click 이벤트 리스너
 	var size = getSize();
 	var beverage = getBeverage();
 	
-	var url = 'coffeemaker.jsp?name=' + name
+	var url = 'coffeemaker.jsp?name=' + encodeURIComponent(name)
 				+ '&size=' + size
 				+ '&beverage=' + beverage
 				+ '&coffeemaker=';
