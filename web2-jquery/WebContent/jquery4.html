@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery 배열</title>
+	<script src="./js/jquery-1.11.2.js"></script>
+	<script>
+		var array = [
+			{name: 'Naver', link: 'http://www.naver.com'},
+			{name: 'Daum', link: 'http://www.daum.net'},
+			{name: 'Google', link: 'https://www.google.com'},
+			{name: 'Bing', link: 'http://www.bing.com'}
+		];
+		
+		$(document).ready(function() {
+			// $.each() 메소드 사용
+			$.each(array, function(index, item) {
+				var output = index + ' - ';
+				output += '<a href="' + item.link + '">';
+				output += item.name;
+				output += '</a>';
+				output += '<br>';
+				
+				document.body.innerHTML += output;
+			});
+		});
+	</script>
+</head>
+<body>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

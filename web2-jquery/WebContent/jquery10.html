@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery - appendTo()</title>
+	<script src="./js/jquery-1.11.2.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('img').css('width', '250px');
+			setInterval(function() {
+				$('img').first().appendTo('body');
+			}, 2000);
+			
+			$('div').append($('h1'));
+		});
+	</script>
+</head>
+<body>
+	<img src="#" alt="이미지-0" />
+	<img src="#" alt="이미지-1" />
+	<img src="#" alt="이미지-2" />
+	<img src="#" alt="이미지-3" />
+	<img src="#" alt="이미지-4" />
+	
+	<h1>HEADER</h1>
+	<hr/><div></div><hr/>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

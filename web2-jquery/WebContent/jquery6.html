@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery - extend() 메소드</title>
+	<script src="./js/jquery-1.11.2.js"></script>
+	<script>
+		$(document).ready(function() {
+			var object = { name: '홍길동' };
+			var obj1 = {
+				region: '서울시 강남구',
+				part: 'Second Guitar'
+			};
+			var obj2 = {
+				age: 30	
+			};
+			$.extend(object, obj1, obj2);
+			
+			
+			// 출력
+			var output = '';
+			$.each(object, function(key, item) {
+				output += key + ': ' + item + '<br>';
+			});
+			document.body.innerHTML = output;
+		});
+	</script>
+</head>
+<body>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

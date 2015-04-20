@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery AJAX</title>
+	<script src="../js/jquery-1.11.2.js"></script>
+	<script>
+		$(document).ready(function() {
+			$.getJSON('./data.json', function(data) {
+				console.log('1');
+				$.each(data, function(key, value) {
+					$('body').append('<h1>' + value.name + ' : ' + value.price + '</h1>');
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+
+</body>
+</html>

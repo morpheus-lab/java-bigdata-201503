@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>BBS</title>
+	<style>
+		table {
+			border: 0;
+			border-collapse: collapse;
+		}
+		th, td {
+			border: 1px solid black;
+			padding: 3px;
+		}
+		#div_list {
+		}
+		#tbl_list {
+			width: 800px;
+		}
+		#div_write {
+			background: white;
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			z-index: 1;
+			display: none;
+		}
+	</style>
+	<script src="./js/jquery-1.11.2.js"></script>
+	<script>
+		$(document).ready(function() {
+			$.getJSON('./list_json.jsp', function(data) {
+				$.each(data, function(key, value) {
+					var trTag = '<tr>';
+					trTag += '<td>' + value.id + '</td>';
+					trTag += '<td>' + value.subject + '</td>';
+					trTag += '<td>' + value.writer + '</td>';
+					trTag += '<td>' + value.writeDate + '</td>';
+					trTag += '<td>' + value.cnt + '</td>';
+					trTag += '</tr>';
+					
+					$(trTag).appendTo('#tbl_list');
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+	
+	<div id="div_list">
+		<table id="tbl_list">
+			<tr>
+				<th>#</th>
+				<th>제목</th>
+				<th>글쓴이</th>
+				<th>날짜</th>
+				<th>조회수</th>
+			</tr>
+		</table>
+	</div>
+	<div id="div_write">
+		<table>
+			<tr>
+				<th>제목</th>
+				<td><input type="text" name="subject"></td>
+			</tr>
+			<tr>
+				<th>글쓴이</th>
+				<td><input type="text" name="writer"></td>
+			</tr>
+			<tr>
+				<th>내용</th>
+				<td><textarea cols="40" rows="10"></textarea></td>
+			</tr>
+		</table>
+	</div>
+	
+</body>
+</html>

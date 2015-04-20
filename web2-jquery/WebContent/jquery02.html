@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery 예제 2</title>
+	<script src="./js/jquery-1.11.2.js"></script>
+	<script>
+		$(document).ready(function() {
+			setTimeout(function() {
+				var value = $('select > option:selected').val();
+				alert(value);
+			}, 5000);
+		});
+	</script>
+</head>
+
+<body>
+
+	<select>
+		<option>Apple</option>
+		<option>Bag</option>
+		<option>Cat</option>
+		<option>Dog</option>
+		<option>Elephant</option>
+	</select>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery AJAX</title>
+	<script src="../js/jquery-1.11.2.js"></script>
+	<script>
+		$(document).ready(function() {
+			/* 
+			$.ajax('./data.html', {
+				success: function(data) {
+					$('body').append(data);
+				}
+			});
+			*/
+			/* 
+			$.ajax({
+				url: './data.html',
+				success: function(data) {
+					$('body').append(data);
+				}
+			});
+			*/
+			/*
+			$.get('./data.html', function(data) {
+				$('body').append(data);
+			});
+			*/
+			$('body').load('./data.html');
+		});
+	</script>
+</head>
+<body>
+
+</body>
+</html>

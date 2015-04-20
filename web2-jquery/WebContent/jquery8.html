@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery - noConflict() 메소드</title>
+	<script src="./js/jquery-1.11.2.js"></script>
+	<script>
+		$(document).ready(function () {
+			//$('h1').css('background', 'orange').filter(':even').css('color', 'white').end()
+			//	.filter(':odd').css('color', 'red');
+			/*
+			$('h1').eq(0).css('background', 'orange');
+			$('h1').eq(-2).css('color', 'red');
+			$('h1').last().css('color', 'blue');
+			*/
+			$('h1').css('background', 'gray').add('h2').css('color', 'blue');
+			
+			$('h1').each(function() {
+				if ($(this).is('.select')) {
+					$(this).css('background', 'orange');
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	
+	<h1 class="select">item - 0</h1>
+	<h1>item - 1</h1>
+	<h1>item - 2</h1>
+	<h1>item - 3</h1>
+	<h1 class="select">item - 4</h1>
+	<h1>item - 5</h1>
+	<h1>item - 6</h1>
+	<h1>item - 7</h1>
+	
+	<h2>item - 10</h2>
+	<h2>item - 11</h2>
+	<h2>item - 12</h2>
+	<h2>item - 13</h2>
+	
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

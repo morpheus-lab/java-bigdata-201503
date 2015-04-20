@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery 사용법</title>
+	<!--
+	<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+	-->
+	<script src="./js/jquery-1.11.2.js"></script>
+	<script>
+ 		/*
+ 		window.onload = function() {
+ 			alert('first ready');
+		};
+		
+		window.onload = function() {
+ 			alert('second ready');
+		};
+		
+		window.onload = function() {
+ 			alert('third ready');
+		};
+		*/
+		/*
+		$(document).ready(function() {
+			alert('first ready');
+		});
+		
+		$(function() {
+			alert('second ready');
+		});
+		
+		$(document).ready(function() {
+			alert('third ready');
+		});
+		*/
+		/*
+		$(document).ready(function() {
+			$('h1#target').css('color', 'orange');
+			$('.item').css('color', 'red');
+			$('h1.item').css('background', 'black');
+			$('.item.select').css('color', 'yellow');
+		});
+		*/
+		$(document).ready(function() {
+			$('div > li').css('color', 'red');
+		});
+	</script>
+</head>
+<body>
+	
+	<h1 class="item">Hello jQuery~!!</h1>
+	<p class="item select">가나다라마바사아자차카타파하</p>
+	<h1 id="target">Lorem ipsum</h1>
+	<p class="item">ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+	
+	<div>
+		<ul>
+			<li>Apple</li>
+			<li>Bag</li>
+			<li>Cat</li>
+			<li>Dog</li>
+			<li>Elephant</li>
+		</ul>
+	</div>
+	
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
