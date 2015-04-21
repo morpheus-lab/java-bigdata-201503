@@ -40,6 +40,9 @@
 			cursor: pointer;
 			/* text-decoration: underline; */
 		}
+		.post_content {
+			background: #cfcfcf;
+		}
 	</style>
 	<script src="./js/jquery-1.11.2.js"></script>
 	<script>
@@ -58,7 +61,11 @@
 					trTag += '<td>' + value.cnt + '</td>';
 					trTag += '</tr>';
 					
-					$(trTag).appendTo('#tbl_list');
+					var elTr = $(trTag);
+					elTr.click(function() {
+						showPostContent(value.id, this);
+					});
+					elTr.appendTo('#tbl_list');
 				});
 				
 				// 기존 페이지 내비게이션 지우기
@@ -99,6 +106,18 @@
 			
 			// input 입력값 비우기
 			$('#form_write')[0].reset();	// 폼 리셋
+		}
+		
+		function showPostContent(postId, elTr) {
+			$.ajax({
+				method: 'get',
+				url: 'bbs_read.jsp?id=' + postId,
+				success: function(data) {
+					$('.post_content').remove();
+					var contentTr = $('<tr class="post_content"><td colspan="5">' + data.trim().replace(/\n/g,'<br>') + '</td></tr>');
+					contentTr.insertAfter($(elTr));
+				}
+			});
 		}
 		
 		$(document).ready(function() {
@@ -146,6 +165,5 @@
 		</table>
 		</form>
 	</div>
-	
 </body>
 </html>
