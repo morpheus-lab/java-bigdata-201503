@@ -20,28 +20,89 @@
 		#div_write {
 			background: white;
 			position: absolute;
-			top: 10px;
-			left: 10px;
+			top: 50px;
+			left: 50px;
+			z-index: 2;
+			display: none;
+		}
+		#div_screen {
+			background: rgba(0,0,0,.5);
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 100%;
+			height: 100%;
 			z-index: 1;
 			display: none;
+		}
+		.pNav {
+			margin: 5px;
+			cursor: pointer;
+			/* text-decoration: underline; */
 		}
 	</style>
 	<script src="./js/jquery-1.11.2.js"></script>
 	<script>
-		$(document).ready(function() {
-			$.getJSON('./list_json.jsp', function(data) {
-				$.each(data, function(key, value) {
-					var trTag = '<tr>';
+		function loadList(page, size) {
+			$.getJSON('./list_json.jsp?pageNum=' + page + '&pageSize=' + size, function(data) {
+				
+				// 기존 목록 비우기
+				$('.list_item').remove();
+				
+				$.each(data.list, function(key, value) {
+					var trTag = '<tr class="list_item">';
 					trTag += '<td>' + value.id + '</td>';
 					trTag += '<td>' + value.subject + '</td>';
 					trTag += '<td>' + value.writer + '</td>';
-					trTag += '<td>' + value.writeDate + '</td>';
+					trTag += '<td>' + value.writeDate.substring(0, 19) + '</td>';
 					trTag += '<td>' + value.cnt + '</td>';
 					trTag += '</tr>';
 					
 					$(trTag).appendTo('#tbl_list');
 				});
+				
+				// 기존 페이지 내비게이션 지우기
+				$('#page_nav').empty();	// 자식 노드 모두 삭제
+				
+				for (var p = 1; p <= data.totalPages; p++) {
+					var pageNav = $('<span class="pNav">' + p + '</span>');
+					// 클릭 이벤트 리스너 처리
+					$(pageNav).click(function() {
+						loadList(Number($(this).text()), size);
+					});
+					$(pageNav).appendTo('#page_nav');
+				}
+				
 			});
+		}
+		
+		function writeNewPost() {
+			// 글쓰기 폼에 있는 제목, 글쓴이, 내용 가져오기
+			var s = $('#post_subject').val();
+			var w = $('#post_writer').val();
+			var c = $('#post_content').val();
+			
+			// bbs_write.jsp에 전송 (AJAX)
+			// 전송할 데이터 준비
+			var data = {
+				subject: s,
+				writer: w,
+				content: c
+			};
+			$.post('./bbs_write.jsp', data, function(res) {
+				// 글쓰기 성공 시 - 목록 갱신
+				loadList(1, 10);
+			});
+			
+			$('#div_write').hide();
+			$('#div_screen').hide();
+			
+			// input 입력값 비우기
+			$('#form_write')[0].reset();	// 폼 리셋
+		}
+		
+		$(document).ready(function() {
+			loadList(1, 10);
 		});
 	</script>
 </head>
@@ -50,29 +111,40 @@
 	<div id="div_list">
 		<table id="tbl_list">
 			<tr>
-				<th>#</th>
+				<th style="width: 60px;">#</th>
 				<th>제목</th>
-				<th>글쓴이</th>
-				<th>날짜</th>
-				<th>조회수</th>
+				<th style="width: 100px;">글쓴이</th>
+				<th style="width: 160px;">날짜</th>
+				<th style="width: 60px;">조회수</th>
 			</tr>
 		</table>
+		<div id="page_nav"></div>
+		<input type="button" value="글쓰기" onclick="$('#div_screen').show(); $('#div_write').show();">
 	</div>
+	<div id="div_screen"></div>
 	<div id="div_write">
+		<form id="form_write">
 		<table>
 			<tr>
 				<th>제목</th>
-				<td><input type="text" name="subject"></td>
+				<td><input type="text" id="post_subject"></td>
 			</tr>
 			<tr>
 				<th>글쓴이</th>
-				<td><input type="text" name="writer"></td>
+				<td><input type="text" id="post_writer"></td>
 			</tr>
 			<tr>
 				<th>내용</th>
-				<td><textarea cols="40" rows="10"></textarea></td>
+				<td><textarea cols="40" rows="10" id="post_content"></textarea></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="button" value="등록" onclick="writeNewPost()">
+					<input type="reset" value="취소" onclick="$('#div_write').hide(); $('#div_screen').hide();">
+				</td>
 			</tr>
 		</table>
+		</form>
 	</div>
 	
 </body>

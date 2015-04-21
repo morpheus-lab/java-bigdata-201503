@@ -49,9 +49,27 @@ while (rs.next()) {
 }
 rs.close();
 pstmt.close();
+
+// 전체 페이지 수 조회
+long totalPosts = 0;
+sql = "SELECT COUNT(*) FROM posts";
+pstmt = conn.prepareStatement(sql);
+rs = pstmt.executeQuery();
+if (rs.next()) {
+	totalPosts = rs.getLong(1);
+}
+int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
+
+rs.close();
+pstmt.close();
 conn.close();
 
 // bList 객체 => JSON
 Gson gson = new GsonBuilder().create();
 %>
-<%= gson.toJson(bList) %>
+{
+  "list": <%= gson.toJson(bList) %>,
+  "totalPages": <%= totalPages %>,
+  "currPage": <%= pageNum %>,
+  "pageSize": <%= pageSize %>
+}
