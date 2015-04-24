@@ -21,4 +21,9 @@
 		<param-name>redis-port</param-name>
 		<param-value>6379</param-value>
 	</context-param>
+	
+	<listener>
+		<listener-class>com.bitacademy.nosql.redis.twitter.AuthUtil</listener-class>
+	</listener>
+	
 </web-app>

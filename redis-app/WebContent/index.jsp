@@ -18,13 +18,18 @@
 // 로그인 상태
 if (session.getAttribute("user_id") != null) {
 %>
-방가방가, <%= session.getAttribute("username") %>님. | <a href="#">로그아웃</a>
+방가방가, <%= session.getAttribute("username") %>님. | <a href="logout.jsp">로그아웃</a>
 <%
 }
 // 로그아웃 상태
 else {
 %>
-<a href="#">로그인</a> | <a href="signup.jsp">회원가입</a>
+<form action="login.jsp" method="post">
+	아 이 디: <input type="text" name="userName"><br>
+	비밀번호: <input type="password" name="userPw"><br>
+	<input type="submit" value="로그인">
+	<input type="button" value="회원가입" onclick="location.href='signup.jsp'">
+</form>
 <%
 }
 %>
