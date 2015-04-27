@@ -2,7 +2,12 @@ package com.bitacademy.nosql.redis.twitter;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -29,6 +34,67 @@ public class AuthUtil implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 		
+	}
+	
+	// 팔로우 기능
+	public static void follow(String followerUserId, String followeeUserId) {
+		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
+				REDIS_HOST, REDIS_PORT);
+		try (Jedis jedis = pool.getResource()) {
+			jedis.sadd(followerUserId + ":following", followeeUserId);
+			jedis.sadd(followeeUserId + ":followers", followerUserId);
+		}
+		pool.destroy();
+	}
+	
+	// 팔로우 중?
+	public static boolean isFollowing(String followerUserId, String followeeUserId) {
+		boolean following = false;
+		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
+				REDIS_HOST, REDIS_PORT);
+		try (Jedis jedis = pool.getResource()) {
+			following = jedis.sismember(followerUserId + ":following", followeeUserId);
+			//jedis.sismember(followeeUserId + ":followers", followerUserId);
+		}
+		pool.destroy();
+		return following;
+	}
+	
+	// 트윗
+	public static void twit(String writerUserId, String twitMessage) {
+		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
+				REDIS_HOST, REDIS_PORT);
+		try (Jedis jedis = pool.getResource()) {
+			// 트윗 등록 ID 생성
+			Long postId = jedis.incr("next_post_id");
+			// 트윗 데이터 입력
+			jedis.set("post:" + postId,
+					writerUserId + "|"
+					+ LocalDateTime.now().toString() + "|"
+					+ twitMessage);
+			
+			// 전체 타임라인에 트윗 등록
+			jedis.lpush("timeline", postId.toString());
+			
+			// 사용자 타임라인에 트윗 등록
+			jedis.lpush("timeline:" + writerUserId, postId.toString());
+			
+			// 글쓴이의 팔로워 타임라인에 트윗 등록
+			// 팔로워 조회
+			Set<String> followers = jedis.smembers(writerUserId + ":followers");
+			// 팔로워 타임라인에 트윗 등록
+			followers.forEach(new Consumer<String>() {
+				@Override
+				public void accept(String followerUserId) {
+					jedis.lpush("timeline:" + followerUserId,
+							postId.toString());
+				}
+			});
+			
+			// 본인의 트윗 목록에 트윗 ID 등록
+			jedis.lpush(writerUserId + ":posts", postId.toString());
+		}
+		pool.destroy();
 	}
 	
 	public static boolean login(String userName, String password,
@@ -154,14 +220,20 @@ public class AuthUtil implements ServletContextListener {
 	}
 
 	public static void main(String[] args) {
-		String userName = "gdhong";
-		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
-				"192.168.1.37");
-		try (Jedis jedis = pool.getResource()) {
-			Boolean userId = jedis.hexists("user_info", userName + ":user_id");
-			System.out.println(userId);
-		}
-		pool.destroy();
+//		String userName = "gdhong";
+//		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
+//				"192.168.1.37");
+//		try (Jedis jedis = pool.getResource()) {
+//			Boolean userId = jedis.hexists("user_info", userName + ":user_id");
+//			System.out.println(userId);
+//		}
+//		pool.destroy();
+		
+		LocalDateTime ldt = LocalDateTime.now();
+		System.out.println(ldt.toString());
+		
+		ZonedDateTime zdt = ZonedDateTime.now();
+		System.out.println(zdt.toString());
 	}
 	
 }

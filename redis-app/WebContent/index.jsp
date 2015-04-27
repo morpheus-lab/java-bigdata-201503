@@ -35,19 +35,48 @@ else {
 %>
 	</div>
 	
-	<form action="" method="post">
-		<span style="padding-right: 3px">one word</span>
+<%-- 로그인 된 상태에서만 트윗 등록할 수 있도록 작성 --%>
+<%
+if (session.getAttribute("user_id") != null) {
+%>
+	<form id="" action="post.jsp" method="post">
+		<textarea name="message" rows="3" cols="30" style="width: 200px; height: 40px;"></textarea>
+		<input type="submit" value="트윗" style="height: 40px; ">
 	</form>
-	
+<%
+}
+%>
+
 	<div id="page_title">
-		<span id="follow"></span>
+		<span id="follow">
+<%
+// 로그인 상태 확인
+if (session.getAttribute("user_id") != null) {
+	// "{USER_ID}:following"이라는 키의
+	// Set 데이터에 상대방 user_id가 존재하는 지 여부 확인
+	// 존재한다면 "Following" 출력
+	// 그렇지 않다면 "Follow" 링크 출력
+%>
+		<!--
+			이미 팔로우한 경우		=> "Following"
+			팔로우하지 않은 경우	=> "Follow" 링크 출력
+		-->
+<%
+}
+%>
+		</span>
 	</div>
 
-	<div class="timeline_user"></div>
-	<div class="timeline_body"></div>
-	<div style="clear: left;"></div>
-	<div class="timeline_date"></div>
-
+<%
+%>
+	<div>
+		<div class="timeline_user"><!-- 글쓴이 userName --></div>
+		<div class="timeline_body"><!-- 글 내용 --></div>
+		<div style="clear: left;"></div>
+		<div class="timeline_date"><!-- 글 쓴 날짜 --></div>
+	</div>
+<%
+%>
 </body>
 </html>
 
