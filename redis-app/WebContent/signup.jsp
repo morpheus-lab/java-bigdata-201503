@@ -1,5 +1,5 @@
 <%@page import="java.util.UUID"%>
-<%@page import="com.bitacademy.nosql.redis.twitter.AuthUtil"%>
+<%@page import="com.bitacademy.nosql.redis.twitter.AppControl"%>
 <%@page import="redis.clients.jedis.JedisPoolConfig"%>
 <%@page import="redis.clients.jedis.Jedis"%>
 <%@page import="redis.clients.jedis.JedisPool"%>
@@ -73,43 +73,43 @@
 	<h3>회원가입</h3>
 	
 <%
-	String flag = request.getParameter("flag");
+		String flag = request.getParameter("flag");
 
-if ("reg".equals(flag)) {
-	// 회원 가입 처리
-	String userName = request.getParameter("userName");
-	String password = request.getParameter("userPw");
-	// Redis에 저장
-	JedisPool pool =  new JedisPool(new JedisPoolConfig(),
-								application.getInitParameter("redis-host"),
-								Integer.parseInt(
-										application.getInitParameter("redis-port")));
-	String auth = UUID.randomUUID().toString();
-	String userId = null;
-	try (Jedis jedis = pool.getResource()) {
-		userId = jedis.incr("next_user_id").toString();
+	if ("reg".equals(flag)) {
+		// 회원 가입 처리
+		String userName = request.getParameter("userName");
+		String password = request.getParameter("userPw");
+		// Redis에 저장
+		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
+							application.getInitParameter("redis-host"),
+							Integer.parseInt(
+									application.getInitParameter("redis-port")));
+		String auth = UUID.randomUUID().toString();
+		String userId = null;
+		try (Jedis jedis = pool.getResource()) {
+			userId = jedis.incr("next_user_id").toString();
+			
+			jedis.hset("user_info", userId + ":username", userName);
+			jedis.hset("user_info", userId + ":password", AppControl.sha256Digest(password));
+			jedis.hset("user_info", userId + ":auth", auth);
+			jedis.hset("user_info", auth + ":user_id", userId.toString());
+			jedis.hset("user_info", userName + ":user_id", userId.toString());
+		}
+		pool.destroy();
 		
-		jedis.hset("user_info", userId + ":username", userName);
-		jedis.hset("user_info", userId + ":password", AuthUtil.sha256Digest(password));
-		jedis.hset("user_info", userId + ":auth", auth);
-		jedis.hset("user_info", auth + ":user_id", userId.toString());
-		jedis.hset("user_info", userName + ":user_id", userId.toString());
-	}
-	pool.destroy();
-	
-	// 로그인 처리
-	if (userId != null) {
-		Cookie cookie = new Cookie("auth", auth);
-		cookie.setMaxAge(60 * 60 * 24);	// 유효시간: 초 단위
-		response.addCookie(cookie);
-		
-		session.setAttribute("user_id", userId);
-		session.setAttribute("username", userName);
-	}
-	// index.jsp로 리디렉트
-	response.sendRedirect(request.getContextPath());
-} else {
-%>
+		// 로그인 처리
+		if (userId != null) {
+			Cookie cookie = new Cookie("auth", auth);
+			cookie.setMaxAge(60 * 60 * 24);	// 유효시간: 초 단위
+			response.addCookie(cookie);
+			
+			session.setAttribute("user_id", userId);
+			session.setAttribute("username", userName);
+		}
+		// index.jsp로 리디렉트
+		response.sendRedirect(request.getContextPath());
+	} else {
+	%>
 	<form action="./signup.jsp" method="post" onsubmit="return validate()">
 		<input type="hidden" name="flag" value="reg">
 		아 이 디: <input type="text" name="userName" onchange="resetIdOk()">

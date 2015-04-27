@@ -23,7 +23,7 @@
 	</context-param>
 	
 	<listener>
-		<listener-class>com.bitacademy.nosql.redis.twitter.AuthUtil</listener-class>
+		<listener-class>com.bitacademy.nosql.redis.twitter.AppControl</listener-class>
 	</listener>
 	
 </web-app>

@@ -1,12 +1,12 @@
-<%@page import="com.bitacademy.nosql.redis.twitter.AuthUtil"%>
+<%@page import="com.bitacademy.nosql.redis.twitter.AppControl"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-// 로그인 처리
+	// 로그인 처리
 String userName = request.getParameter("userName");
 String userPass = request.getParameter("userPw");
 
-boolean success = AuthUtil.login(userName, userPass, request, response);
+boolean success = AppControl.login(userName, userPass, request, response);
 
 String contextPath = request.getContextPath();
 

@@ -5,6 +5,8 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -19,7 +21,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-public class AuthUtil implements ServletContextListener {
+public class AppControl implements ServletContextListener {
 	
 	private static String REDIS_HOST = null;
 	private static int REDIS_PORT = 0;
@@ -95,6 +97,36 @@ public class AuthUtil implements ServletContextListener {
 			jedis.lpush(writerUserId + ":posts", postId.toString());
 		}
 		pool.destroy();
+	}
+	
+	// 트윗 조회 (1) - 전체
+	public static List<Post> getTimeline() {
+		List<Post> posts = new ArrayList<Post>();
+		
+		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
+				REDIS_HOST, REDIS_PORT);
+		try (Jedis jedis = pool.getResource()) {
+			List<String> postIds = jedis.lrange("timeline", 0, 9);
+			postIds.forEach(new Consumer<String>() {
+				@Override
+				public void accept(String postId) {
+					String post = jedis.get("post:" + postId);
+					
+					String[] postFields = post.split("|", 3);
+					
+					Post p = new Post();
+					p.setPostId(postFields[0]);
+					p.setWriteDateTime(postFields[1]);
+					p.setMessage(postFields[2]);
+					
+					posts.add(p);
+				}
+			});
+			
+		}
+		pool.destroy();
+		
+		return posts;
 	}
 	
 	public static boolean login(String userName, String password,
