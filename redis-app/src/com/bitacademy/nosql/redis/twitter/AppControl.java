@@ -38,6 +38,18 @@ public class AppControl implements ServletContextListener {
 		
 	}
 	
+	// user id로 username 조회
+	public static String getUsername(String userId) {
+		String username = null;
+		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
+				REDIS_HOST, REDIS_PORT);
+		try (Jedis jedis = pool.getResource()) {
+			username = jedis.hget("user_info", userId + ":username");
+		}
+		pool.destroy();
+		return username;
+	}
+	
 	// 팔로우 기능
 	public static void follow(String followerUserId, String followeeUserId) {
 		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
@@ -100,32 +112,43 @@ public class AppControl implements ServletContextListener {
 	}
 	
 	// 트윗 조회 (1) - 전체
-	public static List<Post> getTimeline() {
+	public static List<Post> getTimeline(long start, long end) {
+		return getTimeline(null, start, end);
+	}
+	
+	// 트윗 조회 (2) - user id 별
+	public static List<Post> getTimeline(String userId, long start, long end) {
 		List<Post> posts = new ArrayList<Post>();
 		
 		JedisPool pool =  new JedisPool(new JedisPoolConfig(),
 				REDIS_HOST, REDIS_PORT);
 		try (Jedis jedis = pool.getResource()) {
-			List<String> postIds = jedis.lrange("timeline", 0, 9);
+			
+			List<String> postIds = jedis.lrange(
+					"timeline" + (userId == null ? "" : ":" + userId),
+					start, end);
+			
 			postIds.forEach(new Consumer<String>() {
 				@Override
 				public void accept(String postId) {
 					String post = jedis.get("post:" + postId);
-					
-					String[] postFields = post.split("|", 3);
+					String[] postFields = post.split("\\|", 3);
 					
 					Post p = new Post();
-					p.setPostId(postFields[0]);
+					p.setWriterUserId(postFields[0]);
 					p.setWriteDateTime(postFields[1]);
 					p.setMessage(postFields[2]);
+					
+					// writerUserId(postFields[0])으로 username 조회
+					String writerUserName = jedis.hget("user_info",
+							postFields[0] + ":username");
+					p.setWriterUserName(writerUserName);
 					
 					posts.add(p);
 				}
 			});
-			
 		}
 		pool.destroy();
-		
 		return posts;
 	}
 	

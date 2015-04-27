@@ -4,15 +4,22 @@ import java.io.Serializable;
 
 public class Post implements Serializable {
 	
-	private String postId;
+	private String writerUserId;
+	private String writerUserName;
 	private String writeDateTime;
 	private String message;
 	
-	public String getPostId() {
-		return postId;
+	public String getWriterUserId() {
+		return writerUserId;
 	}
-	public void setPostId(String postId) {
-		this.postId = postId;
+	public void setWriterUserId(String writerUserId) {
+		this.writerUserId = writerUserId;
+	}
+	public String getWriterUserName() {
+		return writerUserName;
+	}
+	public void setWriterUserName(String writerUserName) {
+		this.writerUserName = writerUserName;
 	}
 	public String getWriteDateTime() {
 		return writeDateTime;

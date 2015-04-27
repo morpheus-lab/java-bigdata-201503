@@ -1,3 +1,7 @@
+<%@page import="java.util.function.Consumer"%>
+<%@page import="com.bitacademy.nosql.redis.twitter.AppControl"%>
+<%@page import="com.bitacademy.nosql.redis.twitter.Post"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -45,10 +49,12 @@ if (session.getAttribute("user_id") != null) {
 	</form>
 <%
 }
-%>
 
+String paramUserId = request.getParameter("userId");
+%>
 	<div id="page_title">
-		<span id="follow">
+		<%= paramUserId == null ?
+				"" : AppControl.getUsername(paramUserId) + "님의 트위터" %>
 <%
 // 로그인 상태 확인
 if (session.getAttribute("user_id") != null) {
@@ -56,26 +62,65 @@ if (session.getAttribute("user_id") != null) {
 	// Set 데이터에 상대방 user_id가 존재하는 지 여부 확인
 	// 존재한다면 "Following" 출력
 	// 그렇지 않다면 "Follow" 링크 출력
+	String myUserId = (String) session.getAttribute("user_id");
+	
+	if (paramUserId != null && !paramUserId.trim().equals("")
+			&& !myUserId.equals(paramUserId)	// 자기 자신을 팔로잉 할 수 없음
+		) {
 %>
-		<!--
-			이미 팔로우한 경우		=> "Following"
-			팔로우하지 않은 경우	=> "Follow" 링크 출력
-		-->
+		<span id="follow">
 <%
-}
+		if (!AppControl.isFollowing(myUserId, paramUserId)) {
+			// 팔로우 가능
+%>
+			<a href="follow.jsp?userId=<%= paramUserId %>">Follow</a>
+<%
+		} else {
+			// 이미 팔로우하고 있는 상태
+%>
+			Following
+<%
+		}
 %>
 		</span>
+<%
+	}
+}
+%>
 	</div>
 
 <%
+List<Post> posts = null;
+
+if (paramUserId != null && !paramUserId.trim().equals("")) {
+	posts = AppControl.getTimeline(paramUserId, 0, 9);
+} else {
+	if (session.getAttribute("user_id") != null) {
+		// 로그인 상태
+		posts = AppControl.getTimeline(
+				(String) session.getAttribute("user_id"), 0, 9);
+	} else {
+		// 로그아웃 상태
+		posts = AppControl.getTimeline(0, 9);
+	}
+}
+
+if (posts != null) {
+	for (int i = 0; i < posts.size(); i++) {
+		Post p = posts.get(i);	
 %>
 	<div>
-		<div class="timeline_user"><!-- 글쓴이 userName --></div>
-		<div class="timeline_body"><!-- 글 내용 --></div>
+		<div class="timeline_user">
+			<!-- 글쓴이 userName -->
+			<a href="?userId=<%= p.getWriterUserId() %>"><%= p.getWriterUserName() %></a>
+		</div>
+		<div class="timeline_body"><!-- 글 내용 --><%= p.getMessage() %></div>
 		<div style="clear: left;"></div>
-		<div class="timeline_date"><!-- 글 쓴 날짜 --></div>
+		<div class="timeline_date"><!-- 글 쓴 날짜 --><%= p.getWriteDateTime() %></div>
 	</div>
 <%
+	}
+}
 %>
 </body>
 </html>
