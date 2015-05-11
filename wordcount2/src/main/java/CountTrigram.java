@@ -11,14 +11,13 @@ import org.apache.hadoop.mapreduce.lib.output.*;
 public class CountTrigram {
 	
 	// Mapper
-	public static class Map extends Mapper<Text, Text, Text, IntWritable> {
+	public static class Map extends Mapper<Text, Text, Text, LongWritable> {
 		
-		private Text word = new Text();
-		private final static IntWritable one = new IntWritable(1);
+		private final static LongWritable one = new LongWritable(1);
 		
 		@Override
 		public void map(Text key, Text value,
-				Mapper<Text, Text, Text, IntWritable>.Context context)
+				Mapper<Text, Text, Text, LongWritable>.Context context)
 				throws IOException, InterruptedException {
 			
 			String line = value.toString();
